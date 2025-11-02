@@ -10,7 +10,7 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "start": "node"
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
@@ -31,6 +31,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.544.0",
+    "nitro": "3.0.1-alpha.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwind-merge": "^3.0.2",
