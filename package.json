@@ -14,7 +14,7 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check --write",
-    "start": "dotenvx run -- node .output/server/index.mjs"
+    "start": "dotenvx run -f .env.production -- node .output/server/index.mjs"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.51.0",

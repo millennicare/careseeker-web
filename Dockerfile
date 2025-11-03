@@ -4,8 +4,8 @@
 FROM node:22-alpine AS base
 WORKDIR /app
 
-# Enable pnpm globally (caches better than re-running corepack every stage)
-RUN corepack enable
+# Enable pnpm globally
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # ---- Dependencies stage ----
 FROM base AS deps
@@ -31,10 +31,16 @@ RUN pnpm build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
+# Install pnpm in the runner stage
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Copy built files and dependencies
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/.env.production ./.env.production
 
+# Install dotenvx
 RUN curl -sfS https://dotenvx.sh/install.sh | sh
 
 EXPOSE 3000

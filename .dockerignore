@@ -1,5 +1,5 @@
 .gitignore
-.env
+!.env.production
 node_modules
 .env.keys
-!.env.production
+.env
