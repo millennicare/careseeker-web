@@ -31,7 +31,6 @@ RUN pnpm build
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-# Copy output and only what's needed for runtime
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./
 COPY --from=deps /app/node_modules ./node_modules
