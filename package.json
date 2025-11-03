@@ -2,7 +2,7 @@
   "name": "careseeker-web",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.18.0",
+  "packageManager": "pnpm@10.20.0",
   "engines": {
     "node": ">=22.10.0"
   },
@@ -14,9 +14,10 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check --write",
-    "start": "node .output/server/index.mjs"
+    "start": "dotenvx run -f .env.production -- node .output/server/index.mjs"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.51.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.6",
