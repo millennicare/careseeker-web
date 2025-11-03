@@ -36,11 +36,6 @@ COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./
 COPY --from=deps /app/node_modules ./node_modules
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends curl ca-certificates \
-  && rm -rf /var/lib/apt/lists/*
-
-# Install dotenvx
 RUN curl -sfS https://dotenvx.sh/install.sh | sh
 
 EXPOSE 3000
