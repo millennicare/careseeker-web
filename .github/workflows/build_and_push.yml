@@ -51,6 +51,5 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64
       - name: Deploy to Coolify
-        if: success()
-        run: |
-          curl -fsSL -X GET "https://coolify.millennicare.com/webhooks/container/[your-app-id]?secret=${{ secrets.COOLIFY_TOKEN }}"
+        run: | 
+         curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
