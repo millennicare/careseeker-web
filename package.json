@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@10.20.0",
   "engines": {
-    "node": ">=22.10.0"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "vite dev --port 3000",
@@ -14,10 +14,9 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check --write",
-    "start": "dotenvx run -f .env.production -- node .output/server/index.mjs"
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
-    "@dotenvx/dotenvx": "^1.51.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.6",

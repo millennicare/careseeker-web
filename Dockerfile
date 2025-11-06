@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.6
 
 # ---- Base builder ----
-FROM node:22-alpine AS base
+FROM node:24-alpine3.21 AS base
 WORKDIR /app
 
 # Enable pnpm globally
@@ -21,6 +21,9 @@ RUN pnpm install --frozen-lockfile
 # ---- Build stage ----
 FROM deps AS builder
 
+ARG VITE_SERVER_URL
+ENV VITE_SERVER_URL=$VITE_SERVER_URL
+
 # Copy rest of the source code after deps (maximizes layer caching)
 COPY . .
 
@@ -28,7 +31,7 @@ COPY . .
 RUN pnpm build
 
 # ---- Production runtime ----
-FROM node:22-alpine AS runner
+FROM node:24-alpine3.21 AS runner
 WORKDIR /app
 
 # Install pnpm in the runner stage
@@ -38,10 +41,6 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/.env.production ./.env.production
-
-# Install dotenvx
-RUN curl -sfS https://dotenvx.sh/install.sh | sh
 
 EXPOSE 3000
 
