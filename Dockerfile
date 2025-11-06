@@ -21,6 +21,9 @@ RUN pnpm install --frozen-lockfile
 # ---- Build stage ----
 FROM deps AS builder
 
+ARG VITE_SERVER_URL
+ENV VITE_SERVER_URL=$VITE_SERVER_URL
+
 # Copy rest of the source code after deps (maximizes layer caching)
 COPY . .
 
