@@ -210,6 +210,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/contacts/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create Contact */
+    post: operations["create_contact_contacts__post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -237,6 +254,63 @@ export interface components {
        * Format: password
        */
       client_secret?: string | null;
+    };
+    /**
+     * ContactPriorityEnum
+     * @enum {string}
+     */
+    ContactPriorityEnum: "low" | "medium" | "high" | "urgent";
+    /** ContactSchema */
+    ContactSchema: {
+      /** Fullname */
+      fullName: string;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Message */
+      message: string;
+      /** Userid */
+      userId?: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      status: components["schemas"]["ContactStatusEnum"];
+      priority: components["schemas"]["ContactPriorityEnum"];
+      /**
+       * Submittedat
+       * Format: date-time
+       */
+      submittedAt: string;
+      /**
+       * Createdat
+       * Format: date-time
+       */
+      createdAt: string;
+      /** Updatedat */
+      updatedAt?: string | null;
+    };
+    /**
+     * ContactStatusEnum
+     * @enum {string}
+     */
+    ContactStatusEnum: "pending" | "in_progress" | "resolved" | "closed";
+    /** CreateContactSchema */
+    CreateContactSchema: {
+      /** Fullname */
+      fullName: string;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Message */
+      message: string;
+      /** Userid */
+      userId?: string | null;
     };
     /** CreateWaitlistSchema */
     CreateWaitlistSchema: {
@@ -793,6 +867,39 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["WaitlistSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  create_contact_contacts__post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateContactSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContactSchema"];
         };
       };
       /** @description Validation Error */
