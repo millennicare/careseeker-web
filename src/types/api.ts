@@ -193,6 +193,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/users/onboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Onboard User */
+    post: operations["onboard_user_users_onboard_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/waitlists/": {
     parameters: {
       query?: never;
@@ -221,6 +238,40 @@ export interface paths {
     put?: never;
     /** Create Contact */
     post: operations["create_contact_contacts__post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/contacts/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Contact */
+    get: operations["get_contact_contacts__id__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/contacts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Contacts */
+    get: operations["get_contacts_contacts_get"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -271,6 +322,8 @@ export interface components {
       email: string;
       /** Message */
       message: string;
+      /** Subject */
+      subject: string;
       /** Userid */
       userId?: string | null;
       /**
@@ -309,6 +362,8 @@ export interface components {
       email: string;
       /** Message */
       message: string;
+      /** Subject */
+      subject: string;
       /** Userid */
       userId?: string | null;
     };
@@ -334,6 +389,20 @@ export interface components {
     HTTPValidationError: {
       /** Detail */
       detail?: components["schemas"]["ValidationError"][];
+    };
+    /** OnboardUserSchema */
+    OnboardUserSchema: {
+      gender: components["schemas"]["UserGenderEnum"];
+      /**
+       * Phonenumber
+       * Format: phone
+       */
+      phoneNumber: string;
+      /**
+       * Birthdate
+       * Format: date-time
+       */
+      birthdate: string;
     };
     /** RefreshTokenRequestSchema */
     RefreshTokenRequestSchema: {
@@ -383,6 +452,42 @@ export interface components {
       rolesToAdd?: components["schemas"]["RoleEnum"][] | null;
       /** Rolestoremove */
       rolesToRemove?: components["schemas"]["RoleEnum"][] | null;
+    };
+    /**
+     * UserGenderEnum
+     * @enum {string}
+     */
+    UserGenderEnum: "male" | "female" | "other" | "prefer_not_to_say";
+    /** UserInformation */
+    UserInformation: {
+      gender: components["schemas"]["UserGenderEnum"];
+      /**
+       * Phonenumber
+       * Format: phone
+       */
+      phoneNumber: string;
+      /**
+       * Birthdate
+       * Format: date-time
+       */
+      birthdate: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * Userid
+       * Format: uuid
+       */
+      userId: string;
+      /**
+       * Createdat
+       * Format: date-time
+       */
+      createdAt: string;
+      /** Updatedat */
+      updatedAt?: string | null;
     };
     /** UserSchema */
     UserSchema: {
@@ -847,6 +952,39 @@ export interface operations {
       };
     };
   };
+  onboard_user_users_onboard_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OnboardUserSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserInformation"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   create_waitlist_waitlists__post: {
     parameters: {
       query?: never;
@@ -900,6 +1038,70 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ContactSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_contact_contacts__id__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description The id of the contact */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContactSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_contacts_contacts_get: {
+    parameters: {
+      query?: {
+        skip?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContactSchema"][];
         };
       };
       /** @description Validation Error */
