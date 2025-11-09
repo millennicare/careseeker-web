@@ -377,6 +377,11 @@ export interface components {
        */
       email: string;
     };
+    /** ErrorDetail */
+    ErrorDetail: {
+      /** Detail */
+      detail: string;
+    };
     /** ForgotPasswordSchema */
     ForgotPasswordSchema: {
       /**
@@ -600,14 +605,18 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ErrorDetail"];
+        };
       };
       /** @description A user already exists with this email address */
       409: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ErrorDetail"];
+        };
       };
       /** @description Validation Error */
       422: {
