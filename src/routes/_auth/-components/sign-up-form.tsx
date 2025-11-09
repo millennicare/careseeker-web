@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,52 +12,67 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
-import { createContact } from "../-api/create-contact";
-import { CreateContactSchema } from "../-schemas/contact";
+import { signUp } from "../-api/sign-up";
+import {
+  RoleEnum,
+  SignUpWithPasswordConfirmationSchema,
+} from "../-schemas/sign-up";
 
-export default function ContactUsForm() {
+export default function SignUpForm() {
+  const navigate = useNavigate();
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: useServerFn(createContact),
+    mutationFn: useServerFn(signUp),
   });
 
   const form = useForm({
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
-      subject: "",
-      message: "",
+      password: "",
+      confirm: "",
+      roles: [RoleEnum.CARESEEKER],
     },
     validators: {
-      onSubmit: CreateContactSchema,
+      onSubmit: SignUpWithPasswordConfirmationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
-        await mutateAsync({ data: value });
+        await mutateAsync({
+          data: {
+            name: value.name,
+            email: value.email,
+            password: value.password,
+            roles: value.roles.filter((role) => role === RoleEnum.CARESEEKER),
+          },
+        });
         form.reset();
-        toast.success("Message sent successfully!");
+        await navigate({ to: "/sign-in" });
       } catch (error) {
         if (error instanceof Error) {
           toast.error(error.message);
         } else {
-          toast.error("Failed to send message. Please try again.");
+          toast.error("Something went wrong, please try again later.");
         }
       }
     },
   });
 
   return (
-    <div className="flex h-full w-full flex-col items-center gap-x-3 gap-y-4 px-2 py-5 md:px-5">
+    <div className="flex h-screen w-screen flex-col items-center justify-center gap-x-3 gap-y-4 px-2 py-5 md:px-5">
+      <h1 className="text-center text-3xl tracking-tighter">
+        Create an account
+      </h1>
+
       <form
+        className="flex w-full max-w-lg flex-col space-y-3 rounded-md border px-6 py-6"
         onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit();
         }}
-        className="flex w-full max-w-lg flex-col space-y-3 rounded-md border border-slate-200 p-5"
       >
         <FieldGroup>
           <form.Field
-            name="fullName"
+            name="name"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -89,7 +105,7 @@ export default function ContactUsForm() {
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Email Address</FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -110,13 +126,13 @@ export default function ContactUsForm() {
 
         <FieldGroup>
           <form.Field
-            name="subject"
+            name="password"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Subject</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
                   <Input
                     id={field.name}
                     name={field.name}
@@ -124,8 +140,9 @@ export default function ContactUsForm() {
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
-                    placeholder="Subject"
-                    type="text"
+                    placeholder="********"
+                    autoComplete="new-password"
+                    type="password"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
@@ -136,22 +153,22 @@ export default function ContactUsForm() {
 
         <FieldGroup>
           <form.Field
-            name="message"
+            name="confirm"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Message</FieldLabel>
-                  <Textarea
+                  <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
+                  <Input
                     id={field.name}
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
-                    placeholder="Enter your message..."
-                    rows={3}
+                    placeholder="********"
+                    type="password"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
@@ -167,10 +184,14 @@ export default function ContactUsForm() {
               Submitting...
             </>
           ) : (
-            "Submit"
+            "Sign Up"
           )}
         </Button>
       </form>
+
+      <Button asChild variant="link">
+        <Link to="/sign-in">Already have an account?</Link>
+      </Button>
     </div>
   );
 }
