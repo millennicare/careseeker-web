@@ -44,6 +44,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          defer
+          src="https://umami.millennicare.com/script.js"
+          data-website-id="0a5d2785-5dab-4ce1-996a-4619068e5298"
+        ></script>
       </head>
       <body>
         {children}
