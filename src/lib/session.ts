@@ -1,4 +1,5 @@
 import { useSession } from "@Tanstack/react-start/server";
+import { serverEnv } from "./env";
 
 type SessionData = {
   accessToken?: string;
@@ -8,7 +9,7 @@ type SessionData = {
 export function useAppSession() {
   return useSession<SessionData>({
     name: "millennicare-session",
-    password: process.env.SESSION_SECRET!,
+    password: serverEnv.SESSION_SECRET,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

@@ -37,7 +37,6 @@ export default function SignUpForm() {
     },
     validators: {
       onSubmit: SignUpWithPasswordConfirmationSchema,
-      onBlur: SignUpWithPasswordConfirmationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
@@ -64,14 +63,14 @@ export default function SignUpForm() {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-x-3 gap-y-4 px-2 py-5 md:px-5">
       {isSuccess ? (
-        <div className="flex w-full max-w-lg flex-col h-full max-h-1/3 rounded-md border px-6 py-6 items-center justify-between">
+        <div className="flex h-full max-h-1/3 w-full max-w-lg flex-col items-center justify-between rounded-md border px-6 py-6">
           <img
             src="/millennicare_logo_with_text.svg"
             alt="MillenniCare logo"
             className="w-2/3"
           />
 
-          <span className="flex items-center flex-col">
+          <span className="flex flex-col items-center">
             <CheckCircle />
             <h3 className="font-bold text-gray-600">Verification email sent</h3>
             <p className="text-gray-600">
@@ -88,7 +87,7 @@ export default function SignUpForm() {
           <h1 className="text-center text-3xl tracking-tight">
             Create an account
           </h1>
-          <div className="flex w-full max-w-lg flex-col space-y-3 rounded-md border px-6 py-6 items-center">
+          <div className="flex w-full max-w-lg flex-col items-center space-y-3 rounded-md border px-6 py-6">
             <img
               src="/millennicare_logo_with_text.svg"
               alt="MillenniCare logo"
@@ -274,7 +273,7 @@ export default function SignUpForm() {
               <Separator className="flex-1" />
             </div>
 
-            <span className="flex gap-4 md:flex-row flex-col w-full">
+            <span className="flex w-full flex-col gap-4 md:flex-row">
               <Button variant="outline" className="flex-1" disabled>
                 Sign up with Google
               </Button>

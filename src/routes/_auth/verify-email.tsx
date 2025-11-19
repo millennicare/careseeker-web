@@ -1,11 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import z from "zod";
-import VerifyEmailForm from "./-components/verify-email-form";
 
 const VerifyEmailSearchParamsSchema = z.object({
-  token: z.string().optional(),
-  code: z.string().optional(),
+  token: z.string(),
 });
 
 export const Route = createFileRoute("/_auth/verify-email")({
@@ -13,10 +11,16 @@ export const Route = createFileRoute("/_auth/verify-email")({
   validateSearch: zodValidator(VerifyEmailSearchParamsSchema),
 });
 
+/*
+ * The user will click the link in the email and it will call the verify endpoint in the API
+ * If it is a successful response, redirect back to /_auth/sign-in
+ * If it is NOT a successful response, the next time the user attempts to sign in
+ * automatically send a verification email.
+ */
 function VerifyEmailPage() {
   return (
     <div className="h-screen w-screen">
-      <VerifyEmailForm />
+      <h1>Verify email page</h1>
     </div>
   );
 }
