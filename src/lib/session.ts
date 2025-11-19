@@ -1,4 +1,4 @@
-import { useSession } from "@Tanstack/react-start/server";
+import { useSession } from "@tanstack/react-start/server"
 import { serverEnv } from "./env";
 
 type SessionData = {
