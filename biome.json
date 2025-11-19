@@ -34,6 +34,10 @@
       },
       "suspicious": {
         "noArrayIndexKey": "off"
+      },
+      "a11y": {
+        "useSemanticElements": "off",
+        "useFocusableInteractive": "off"
       }
     }
   },
