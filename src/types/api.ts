@@ -21,7 +21,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/auth/sign-up": {
+  "/auth/register": {
     parameters: {
       query?: never;
       header?: never;
@@ -30,15 +30,15 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Sign Up */
-    post: operations["sign_up_auth_sign_up_post"];
+    /** Register */
+    post: operations["register_auth_register_post"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/sign-in": {
+  "/auth/login": {
     parameters: {
       query?: never;
       header?: never;
@@ -47,8 +47,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Sign In */
-    post: operations["sign_in_auth_sign_in_post"];
+    /** Login */
+    post: operations["login_auth_login_post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -123,7 +123,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/auth/sign-out": {
+  "/auth/logout": {
     parameters: {
       query?: never;
       header?: never;
@@ -132,8 +132,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Sign Out */
-    post: operations["sign_out_auth_sign_out_post"];
+    /** Logout */
+    post: operations["logout_auth_logout_post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -151,6 +151,23 @@ export interface paths {
     get: operations["get_current_user_auth_me_get"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/auth/resend-verification": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Resend Verification */
+    post: operations["resend_verification_auth_resend_verification_post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -278,12 +295,65 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/oauth/{provider}/authorize": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Authorize
+     * @description Initiate OAuth2 flow with a social provider.
+     *
+     *     For web apps: Returns authorization URL and the client redirects the user
+     *     For mobile apps: Returns authorization URL, app redirect the user
+     *
+     *     Query Parameters:
+     *     - provider: OAuth provider (apple, google)
+     *     - role: User role
+     *     - app_type: Application type (web, mobile)
+     *
+     *     Headers:
+     *     - Origin: For web apps, the origin domain
+     *     - User-Agent: For mobile detection
+     *
+     *     Example requests:
+     *     - Web: GET /oauth/google/authorize?role=caregiver&app_type=web
+     *     - Mobile: GET /oauth/google/authorize?role=careseeker&app_type=mobile
+     */
+    get: operations["authorize_oauth__provider__authorize_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/oauth/{provider}/callback": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Callback */
+    get: operations["callback_oauth__provider__callback_get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    /** Body_sign_in_auth_sign_in_post */
-    Body_sign_in_auth_sign_in_post: {
+    /** Body_login_auth_login_post */
+    Body_login_auth_login_post: {
       /** Grant Type */
       grant_type?: string | null;
       /** Username */
@@ -305,6 +375,25 @@ export interface components {
        * Format: password
        */
       client_secret?: string | null;
+    };
+    /** Body_onboard_user_users_onboard_post */
+    Body_onboard_user_users_onboard_post: {
+      gender: components["schemas"]["UserGenderEnum"];
+      /**
+       * Phonenumber
+       * Format: phone
+       */
+      phoneNumber: string;
+      /**
+       * Birthdate
+       * Format: date-time
+       */
+      birthdate: string;
+      /**
+       * Profilepicture
+       * Format: binary
+       */
+      profilePicture: string;
     };
     /**
      * ContactPriorityEnum
@@ -395,24 +484,34 @@ export interface components {
       /** Detail */
       detail?: components["schemas"]["ValidationError"][];
     };
-    /** OnboardUserSchema */
-    OnboardUserSchema: {
-      gender: components["schemas"]["UserGenderEnum"];
-      /**
-       * Phonenumber
-       * Format: phone
-       */
-      phoneNumber: string;
-      /**
-       * Birthdate
-       * Format: date-time
-       */
-      birthdate: string;
-    };
     /** RefreshTokenRequestSchema */
     RefreshTokenRequestSchema: {
       /** Refreshtoken */
       refreshToken: string;
+    };
+    /** RegisterSchema */
+    RegisterSchema: {
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Password */
+      password: string;
+      /** Firstname */
+      firstName: string;
+      /** Lastname */
+      lastName: string;
+      /** Roles */
+      roles: components["schemas"]["RoleEnum"][];
+    };
+    /** ResendVerificationSchema */
+    ResendVerificationSchema: {
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
     };
     /** ResetPasswordSchema */
     ResetPasswordSchema: {
@@ -426,20 +525,6 @@ export interface components {
      * @enum {string}
      */
     RoleEnum: "admin" | "careseeker" | "caregiver";
-    /** SignUpSchema */
-    SignUpSchema: {
-      /**
-       * Email
-       * Format: email
-       */
-      email: string;
-      /** Password */
-      password: string;
-      /** Name */
-      name: string;
-      /** Roles */
-      roles: components["schemas"]["RoleEnum"][];
-    };
     /** TokenResponse */
     TokenResponse: {
       /** Accesstoken */
@@ -449,14 +534,18 @@ export interface components {
     };
     /** UpdateUserSchema */
     UpdateUserSchema: {
-      /** Name */
-      name?: string | null;
+      /** Firstname */
+      firstName?: string | null;
+      /** Lastname */
+      lastName?: string | null;
       /** Email */
       email?: string | null;
       /** Rolestoadd */
       rolesToAdd?: components["schemas"]["RoleEnum"][] | null;
       /** Rolestoremove */
       rolesToRemove?: components["schemas"]["RoleEnum"][] | null;
+      /** Email Verified */
+      email_verified: boolean | null;
     };
     /**
      * UserGenderEnum
@@ -465,17 +554,13 @@ export interface components {
     UserGenderEnum: "male" | "female" | "other" | "prefer_not_to_say";
     /** UserInformation */
     UserInformation: {
-      gender: components["schemas"]["UserGenderEnum"];
-      /**
-       * Phonenumber
-       * Format: phone
-       */
-      phoneNumber: string;
-      /**
-       * Birthdate
-       * Format: date-time
-       */
-      birthdate: string;
+      gender?: components["schemas"]["UserGenderEnum"] | null;
+      /** Phonenumber */
+      phoneNumber?: string | null;
+      /** Birthdate */
+      birthdate?: string | null;
+      /** Profilepicture */
+      profilePicture?: string | null;
       /**
        * Id
        * Format: uuid
@@ -496,8 +581,10 @@ export interface components {
     };
     /** UserSchema */
     UserSchema: {
-      /** Name */
-      name: string;
+      /** Firstname */
+      firstName: string;
+      /** Lastname */
+      lastName: string;
       /**
        * Email
        * Format: email
@@ -507,12 +594,49 @@ export interface components {
        * Emailverified
        * @default false
        */
-      emailVerified: boolean;
+      emailVerified: boolean | null;
       /**
        * Id
        * Format: uuid
        */
       id: string;
+      /**
+       * Createdat
+       * Format: date-time
+       */
+      createdAt: string;
+      /** Updatedat */
+      updatedAt?: string | null;
+    };
+    /** UserWithInformationSchema */
+    UserWithInformationSchema: {
+      /** Firstname */
+      firstName: string;
+      /** Lastname */
+      lastName: string;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /**
+       * Emailverified
+       * @default false
+       */
+      emailVerified: boolean | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * Createdat
+       * Format: date-time
+       */
+      createdAt: string;
+      /** Updatedat */
+      updatedAt?: string | null;
+      profile?: components["schemas"]["UserInformation"] | null;
     };
     /** ValidationError */
     ValidationError: {
@@ -525,8 +649,8 @@ export interface components {
     };
     /** VerifySchema */
     VerifySchema: {
-      /** Code */
-      code: string;
+      /** Token */
+      token: string;
     };
     /** WaitlistSchema */
     WaitlistSchema: {
@@ -578,7 +702,7 @@ export interface operations {
       };
     };
   };
-  sign_up_auth_sign_up_post: {
+  register_auth_register_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -587,35 +711,17 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["SignUpSchema"];
+        "application/json": components["schemas"]["RegisterSchema"];
       };
     };
     responses: {
-      /** @description User created */
+      /** @description Successful Response */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
           "application/json": components["schemas"]["UserSchema"];
-        };
-      };
-      /** @description Role not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorDetail"];
-        };
-      };
-      /** @description A user already exists with this email address */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorDetail"];
         };
       };
       /** @description Validation Error */
@@ -629,7 +735,7 @@ export interface operations {
       };
     };
   };
-  sign_in_auth_sign_in_post: {
+  login_auth_login_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -638,7 +744,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/x-www-form-urlencoded": components["schemas"]["Body_sign_in_auth_sign_in_post"];
+        "application/x-www-form-urlencoded": components["schemas"]["Body_login_auth_login_post"];
       };
     };
     responses: {
@@ -681,7 +787,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": {
+            [key: string]: string;
+          };
         };
       };
       /** @description Validation Error */
@@ -714,7 +822,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": {
+            [key: string]: string;
+          };
         };
       };
       /** @description Validation Error */
@@ -747,7 +857,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": {
+            [key: string]: string;
+          };
         };
       };
       /** @description Validation Error */
@@ -794,7 +906,7 @@ export interface operations {
       };
     };
   };
-  sign_out_auth_sign_out_post: {
+  logout_auth_logout_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -810,6 +922,15 @@ export interface operations {
         };
         content: {
           "application/json": unknown;
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorDetail"];
         };
       };
     };
@@ -829,7 +950,42 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["UserSchema"];
+          "application/json": components["schemas"]["UserWithInformationSchema"];
+        };
+      };
+    };
+  };
+  resend_verification_auth_resend_verification_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResendVerificationSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: string;
+          };
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };
@@ -970,7 +1126,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["OnboardUserSchema"];
+        "multipart/form-data": components["schemas"]["Body_onboard_user_users_onboard_post"];
       };
     };
     responses: {
@@ -1111,6 +1267,80 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ContactSchema"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  authorize_oauth__provider__authorize_get: {
+    parameters: {
+      query: {
+        /** @description User role */
+        role: "careseeker" | "caregiver" | "admin";
+        /** @description Application type, e.g. mobile or web */
+        app_type: "web" | "mobile";
+      };
+      header: {
+        "user-agent": string | null;
+      };
+      path: {
+        provider: "apple" | "google";
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  callback_oauth__provider__callback_get: {
+    parameters: {
+      query: {
+        /** @description Authorization code */
+        code: string;
+        /** @description State parameter for CSRF protection */
+        state: string;
+      };
+      header?: never;
+      path: {
+        provider: "apple" | "google";
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
         };
       };
       /** @description Validation Error */

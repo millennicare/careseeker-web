@@ -11,8 +11,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
-import { signUp } from "../-api/sign-up";
+import { signUpFn } from "../-api/sign-up";
 import {
   RoleEnum,
   SignUpWithPasswordConfirmationSchema,
@@ -21,12 +22,13 @@ import {
 export default function SignUpForm() {
   const navigate = useNavigate();
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: useServerFn(signUp),
+    mutationFn: useServerFn(signUpFn),
   });
 
   const form = useForm({
     defaultValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirm: "",
@@ -34,12 +36,14 @@ export default function SignUpForm() {
     },
     validators: {
       onSubmit: SignUpWithPasswordConfirmationSchema,
+      onBlur: SignUpWithPasswordConfirmationSchema,
     },
     onSubmit: async ({ value }) => {
       try {
         await mutateAsync({
           data: {
-            name: value.name,
+            firstName: value.firstName,
+            lastName: value.lastName,
             email: value.email,
             password: value.password,
             roles: value.roles.filter((role) => role === RoleEnum.CARESEEKER),
@@ -59,135 +63,188 @@ export default function SignUpForm() {
 
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-x-3 gap-y-4 px-2 py-5 md:px-5">
-      <h1 className="text-center text-3xl tracking-tighter">
+      <h1 className="text-center text-3xl tracking-tight">
         Create an account
       </h1>
+      <div className="flex w-full max-w-lg flex-col space-y-3 rounded-md border px-6 py-6">
+        <form
+          className="h-full w-full space-y-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <div className="flex flex-col md:flex-row md:gap-4">
+            <FieldGroup className="flex-1">
+              <form.Field
+                name="firstName"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>First Name</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        placeholder="John"
+                        autoComplete="given-name"
+                        type="text"
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            </FieldGroup>
 
-      <form
-        className="flex w-full max-w-lg flex-col space-y-3 rounded-md border px-6 py-6"
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <FieldGroup>
-          <form.Field
-            name="name"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Name</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="Enter your name"
-                    autoComplete="name"
-                    type="text"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          />
-        </FieldGroup>
+            <FieldGroup className="flex-1">
+              <form.Field
+                name="lastName"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid}>
+                      <FieldLabel htmlFor={field.name}>Last Name</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        placeholder="Doe"
+                        autoComplete="family-name"
+                        type="text"
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            </FieldGroup>
+          </div>
 
-        <FieldGroup>
-          <form.Field
-            name="email"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Email Address</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="Enter your email"
-                    autoComplete="email"
-                    type="email"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          />
-        </FieldGroup>
+          <FieldGroup>
+            <form.Field
+              name="email"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Email Address</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="Enter your email"
+                      autoComplete="email"
+                      type="email"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+          </FieldGroup>
 
-        <FieldGroup>
-          <form.Field
-            name="password"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="********"
-                    autoComplete="new-password"
-                    type="password"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          />
-        </FieldGroup>
+          <FieldGroup>
+            <form.Field
+              name="password"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="********"
+                      autoComplete="new-password"
+                      type="password"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+          </FieldGroup>
 
-        <FieldGroup>
-          <form.Field
-            name="confirm"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
-                    placeholder="********"
-                    type="password"
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-          />
-        </FieldGroup>
+          <FieldGroup>
+            <form.Field
+              name="confirm"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      placeholder="********"
+                      type="password"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+          </FieldGroup>
 
-        <Button type="submit" disabled={isPending}>
-          {isPending ? (
-            <>
-              <Spinner />
-              Submitting...
-            </>
-          ) : (
-            "Sign Up"
-          )}
-        </Button>
-      </form>
+          <Button type="submit" disabled={isPending} className="w-full">
+            {isPending ? (
+              <>
+                <Spinner />
+                Submitting...
+              </>
+            ) : (
+              "Sign Up"
+            )}
+          </Button>
+        </form>
+
+        <div className="flex items-center gap-4">
+          <Separator className="flex-1" />
+          <h1 className="whitespace-nowrap text-gray-400">OR</h1>
+          <Separator className="flex-1" />
+        </div>
+
+        <span className='flex gap-4 md:flex-row flex-col'>
+          <Button variant="outline" className='flex-1' disabled>Sign up with Google</Button>
+          <Button variant="outline" className='flex-1' disabled>Sign up with Apple</Button>
+        </span>
+      </div>
 
       <Button asChild variant="link">
         <Link to="/sign-in">Already have an account?</Link>

@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { client } from "@/lib/api-client";
-import { SignUpSchema } from "../-schemas/sign-up";
+import { VerifyEmailSchema } from "../-schemas/verify-email";
 
-export const signUpFn = createServerFn({ method: "POST" })
-  .inputValidator(SignUpSchema)
+export const verifyEmailFn = createServerFn({ method: "POST" })
+  .inputValidator(VerifyEmailSchema)
   .handler(async ({ data }) => {
-    const { data: user, error } = await client.POST("/auth/register", {
+    const { data: res, error } = await client.POST("/auth/verify", {
       body: data,
     });
 
@@ -19,5 +19,5 @@ export const signUpFn = createServerFn({ method: "POST" })
       throw new Error(errorMessage);
     }
 
-    return user;
+    return res;
   });

@@ -10,12 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
+import { Route as HomeIndexRouteImport } from './routes/home/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicPrivacyPolicyRouteImport } from './routes/_public/privacy-policy'
 import { Route as PublicEulaRouteImport } from './routes/_public/eula'
 import { Route as PublicContactUsRouteImport } from './routes/_public/contact-us'
 import { Route as PublicAboutRouteImport } from './routes/_public/about'
-import { Route as AuthVerifyRouteImport } from './routes/_auth/verify'
+import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/_auth/reset-password'
@@ -23,6 +24,11 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeIndexRoute = HomeIndexRouteImport.update({
+  id: '/home/',
+  path: '/home/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
@@ -50,9 +56,9 @@ const PublicAboutRoute = PublicAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => PublicRouteRoute,
 } as any)
-const AuthVerifyRoute = AuthVerifyRouteImport.update({
-  id: '/_auth/verify',
-  path: '/verify',
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
+  id: '/_auth/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
@@ -81,24 +87,26 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
-  '/verify': typeof AuthVerifyRoute
+  '/verify-email': typeof AuthVerifyEmailRoute
   '/about': typeof PublicAboutRoute
   '/contact-us': typeof PublicContactUsRoute
   '/eula': typeof PublicEulaRoute
   '/privacy-policy': typeof PublicPrivacyPolicyRoute
   '/': typeof PublicIndexRoute
+  '/home': typeof HomeIndexRoute
 }
 export interface FileRoutesByTo {
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/reset-password': typeof AuthResetPasswordRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
-  '/verify': typeof AuthVerifyRoute
+  '/verify-email': typeof AuthVerifyEmailRoute
   '/about': typeof PublicAboutRoute
   '/contact-us': typeof PublicContactUsRoute
   '/eula': typeof PublicEulaRoute
   '/privacy-policy': typeof PublicPrivacyPolicyRoute
   '/': typeof PublicIndexRoute
+  '/home': typeof HomeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,12 +115,13 @@ export interface FileRoutesById {
   '/_auth/reset-password': typeof AuthResetPasswordRoute
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
-  '/_auth/verify': typeof AuthVerifyRoute
+  '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_public/about': typeof PublicAboutRoute
   '/_public/contact-us': typeof PublicContactUsRoute
   '/_public/eula': typeof PublicEulaRoute
   '/_public/privacy-policy': typeof PublicPrivacyPolicyRoute
   '/_public/': typeof PublicIndexRoute
+  '/home/': typeof HomeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,24 +130,26 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
-    | '/verify'
+    | '/verify-email'
     | '/about'
     | '/contact-us'
     | '/eula'
     | '/privacy-policy'
     | '/'
+    | '/home'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/forgot-password'
     | '/reset-password'
     | '/sign-in'
     | '/sign-up'
-    | '/verify'
+    | '/verify-email'
     | '/about'
     | '/contact-us'
     | '/eula'
     | '/privacy-policy'
     | '/'
+    | '/home'
   id:
     | '__root__'
     | '/_public'
@@ -146,12 +157,13 @@ export interface FileRouteTypes {
     | '/_auth/reset-password'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
-    | '/_auth/verify'
+    | '/_auth/verify-email'
     | '/_public/about'
     | '/_public/contact-us'
     | '/_public/eula'
     | '/_public/privacy-policy'
     | '/_public/'
+    | '/home/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -160,7 +172,8 @@ export interface RootRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
-  AuthVerifyRoute: typeof AuthVerifyRoute
+  AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
+  HomeIndexRoute: typeof HomeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof PublicRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/home/': {
+      id: '/home/'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public/': {
@@ -207,11 +227,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicAboutRouteImport
       parentRoute: typeof PublicRouteRoute
     }
-    '/_auth/verify': {
-      id: '/_auth/verify'
-      path: '/verify'
-      fullPath: '/verify'
-      preLoaderRoute: typeof AuthVerifyRouteImport
+    '/_auth/verify-email': {
+      id: '/_auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/sign-up': {
@@ -271,7 +291,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
-  AuthVerifyRoute: AuthVerifyRoute,
+  AuthVerifyEmailRoute: AuthVerifyEmailRoute,
+  HomeIndexRoute: HomeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
