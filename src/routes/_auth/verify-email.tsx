@@ -108,7 +108,7 @@ function VerifyEmailPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="rounded-lg bg-white p-8 shadow-lg">
-          <CircleAlert className="w-full self-center text-center text-red-600" />
+          <CircleAlert className="w-full self-center text-center text-red-600" aria-label="Error" />
 
           {/* Error Content */}
           <div className="mt-4 text-center">
@@ -130,7 +130,7 @@ function VerifyEmailPage() {
           {/* Help Text */}
           <div className="mt-6 border-gray-200 border-t pt-4">
             <p className="text-center text-gray-500">
-              <Button variant="link">
+              <Button variant="link" asChild>
                 <Link to="/contact-us" className="text-sm">
                   Need help? Contact Support
                 </Link>
