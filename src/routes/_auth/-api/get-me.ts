@@ -9,6 +9,14 @@ export const getMeFn = createServerFn({ method: "GET" }).handler(async () => {
     return null;
   }
 
-  const { data } = await client.GET("/auth/me");
+  const { data, error } = await client.GET("/auth/me", {
+    headers: {
+      Authorization: `Bearer ${session.data.accessToken}`,
+    },
+  });
+  if (error) {
+    return null;
+  }
+
   return data;
 });

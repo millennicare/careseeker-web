@@ -1,8 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/home/")({
   component: RouteComponent,
-  loader: () => {
+  loader: async ({ context }) => {
+    if (!context.user) {
+      throw redirect({ to: "/sign-in" });
+    }
     // when a user navigates here we need to check for multiple things
     // 1. if the access token does not exist, redirect back to /
     // 2. if the user is here but "emailVerified: false", send a verification email and throw an error message
