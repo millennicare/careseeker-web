@@ -17,6 +17,11 @@ const VerifyEmailWithSearchParamsSchema = z.object({
 
 export const Route = createFileRoute("/_auth/verify-email")({
   validateSearch: zodValidator(VerifyEmailWithSearchParamsSchema),
+  beforeLoad: async ({ context }) => {
+    if (context.user) {
+      throw redirect({ to: "/home" });
+    }
+  },
   loaderDeps: ({ search: { token, error } }) => ({ token, error }),
   loader: async ({ deps: { token, error } }) => {
     if (error) return;

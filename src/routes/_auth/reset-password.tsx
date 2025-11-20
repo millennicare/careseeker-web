@@ -9,6 +9,11 @@ const ResetPasswordWithSearchParamsSchema = z.object({
 
 export const Route = createFileRoute("/_auth/reset-password")({
   validateSearch: zodValidator(ResetPasswordWithSearchParamsSchema),
+  beforeLoad: async ({ context }) => {
+    if (context.user) {
+      throw redirect({ to: "/home" });
+    }
+  },
   loaderDeps: ({ search: { token } }) => ({ token }),
   loader: async ({ deps: { token } }) => {
     if (!token) {

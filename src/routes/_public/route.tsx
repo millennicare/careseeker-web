@@ -7,9 +7,11 @@ export const Route = createFileRoute("/_public")({
 });
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext();
+
   return (
     <>
-      <Navbar isAuthenticated={false} />
+      <Navbar isAuthenticated={user !== null && user !== undefined} />
       <Outlet />
       <Footer />
     </>
