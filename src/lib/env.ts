@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const serverSchema = z.object({
-  SESSION_SECRET: z.string(),
+  SESSION_SECRET: z.string().optional(),
 });
 
 const clientSchema = z.object({

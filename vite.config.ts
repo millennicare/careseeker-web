@@ -16,6 +16,7 @@ const config = defineConfig({
     nitro(),
     viteReact(),
   ],
+  nitro: {}
 })
 
 export default config

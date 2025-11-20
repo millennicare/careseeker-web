@@ -14,7 +14,7 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check --write",
-    "start": "node .output/server/index.mjs"
+    "start": "node --env-file=.env .output/server/index.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
