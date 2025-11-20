@@ -85,7 +85,7 @@ export default function ResetPasswordForm({ token }: ResetPasswordProps) {
                       onChange={(e) => field.handleChange(e.target.value)}
                       aria-invalid={isInvalid}
                       placeholder="********"
-                      autoComplete="current-password"
+                      autoComplete="new-password"
                       type="password"
                     />
                     {isInvalid && (
