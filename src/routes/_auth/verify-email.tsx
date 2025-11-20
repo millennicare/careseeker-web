@@ -108,7 +108,10 @@ function VerifyEmailPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="rounded-lg bg-white p-8 shadow-lg">
-          <CircleAlert className="w-full self-center text-center text-red-600" aria-label="Error" />
+          <CircleAlert
+            className="w-full self-center text-center text-red-600"
+            aria-label="Error"
+          />
 
           {/* Error Content */}
           <div className="mt-4 text-center">
