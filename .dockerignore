@@ -1,5 +1,6 @@
 .gitignore
-!.env.production
 node_modules
 .env.keys
-.env
+.env.local
+.env.development
+.env.test

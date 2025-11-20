@@ -40,6 +40,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # Copy built files and dependencies
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./
+COPY --from=builder /app/.env.production ./
 COPY --from=deps /app/node_modules ./node_modules
 
 EXPOSE 3000
