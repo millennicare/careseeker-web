@@ -1,4 +1,9 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  isRedirect,
+  Link,
+  redirect,
+} from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { CircleAlert } from "lucide-react";
 import z from "zod";
@@ -14,7 +19,7 @@ export const Route = createFileRoute("/_auth/verify-email")({
   validateSearch: zodValidator(VerifyEmailWithSearchParamsSchema),
   loaderDeps: ({ search: { token, error } }) => ({ token, error }),
   loader: async ({ deps: { token, error } }) => {
-    if (error) return null;
+    if (error) return;
     if (!token) {
       throw redirect({
         to: "/verify-email",
@@ -22,14 +27,13 @@ export const Route = createFileRoute("/_auth/verify-email")({
       });
     }
 
-    setTimeout(() => {
-      console.log("checking");
-    }, 3000);
     try {
       await verifyEmailFn({ data: { token } });
-      // Success - redirect to home
-      throw redirect({ to: "/sign-in" });
-    } catch (_error) {
+      // the server fn handles sending the user to sign in
+    } catch (err) {
+      if (isRedirect(err)) {
+        throw err;
+      }
       // Error - redirect back to same page with error flag
       throw redirect({
         to: "/verify-email",

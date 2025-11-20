@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { client } from "@/lib/api-client";
 import { VerifyEmailSchema } from "../-schemas/verify-email";
@@ -5,7 +6,7 @@ import { VerifyEmailSchema } from "../-schemas/verify-email";
 export const verifyEmailFn = createServerFn({ method: "POST" })
   .inputValidator(VerifyEmailSchema)
   .handler(async ({ data }) => {
-    const { data: res, error } = await client.POST("/auth/verify", {
+    const { error } = await client.POST("/auth/verify", {
       body: data,
     });
 
@@ -19,5 +20,5 @@ export const verifyEmailFn = createServerFn({ method: "POST" })
       throw new Error(errorMessage);
     }
 
-    return res;
+    throw redirect({ to: "/sign-in" });
   });
