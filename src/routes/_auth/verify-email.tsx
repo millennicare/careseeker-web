@@ -41,7 +41,6 @@ export const Route = createFileRoute("/_auth/verify-email")({
       });
     }
   },
-
   component: VerifyEmailPage,
 });
 
