@@ -15,9 +15,13 @@ const navLinks = [
   { title: "Contact", to: "/contact-us" },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+  isAuthenticated: boolean;
+}
+
+export default function Navbar({ isAuthenticated }: NavbarProps) {
   return (
-    <nav className="mx-auto flex w-full max-w-screen-xl px-5 py-6">
+    <nav className="mx-auto flex w-full max-w-7xl px-5 py-6">
       {/* Logo */}
       <span className="h-full flex-1">
         <Link to="/">
@@ -43,7 +47,7 @@ export default function Navbar() {
 
       {/* Desktop Buttons */}
       <div className="hidden h-full flex-1 items-center justify-end space-x-4 md:flex">
-        {/*{isAuthenticated ? (
+        {isAuthenticated ? (
           <Link to="/home">
             <Button className="text-md" size="lg">
               Home
@@ -60,7 +64,7 @@ export default function Navbar() {
               <Button>Sign Up</Button>
             </Link>
           </>
-        )}*/}
+        )}
       </div>
 
       {/* Mobile Menu */}
@@ -91,7 +95,7 @@ export default function Navbar() {
                 </Link>
               </SheetClose>
             ))}
-            {/*<SheetClose asChild>
+            <SheetClose asChild>
               <Link to="/sign-in">
                 <Button variant="link" className="text-lg">
                   Sign in
@@ -102,7 +106,7 @@ export default function Navbar() {
               <Link to="/sign-up">
                 <Button size="lg">Sign Up</Button>
               </Link>
-            </SheetClose>*/}
+            </SheetClose>
           </SheetContent>
         </Sheet>
       </div>
